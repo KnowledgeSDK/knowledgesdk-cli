@@ -1,4 +1,5 @@
 import { resolveApiKey, resolveBaseUrl } from './config.js';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 export class ApiError extends Error {
   constructor(
@@ -197,4 +198,97 @@ export async function deleteWebhook(id: string): Promise<void> {
 
 export async function getJob(jobId: string): Promise<Job> {
   return apiGet<Job>(`/v1/jobs/${jobId}`);
+}
+
+// ─── SSE streaming ────────────────────────────────────────────────────────────
+
+export type ExtractStreamEvent =
+  | { type: 'connected'; message: string }
+  | { type: 'progress'; message: string }
+  | { type: 'business_classified'; business: { businessName: string; businessType: string } }
+  | { type: 'pages_planned'; pages: Array<{ url: string; purpose: string }> }
+  | { type: 'page_scraped'; url: string; index: number; total: number; status: 'done' | 'failed' }
+  | { type: 'urls_triaged'; suggestedUrls: Array<{ url: string; reason: string }> }
+  | { type: 'complete'; result: { business: { businessName: string }; knowledgeItems: unknown[]; pagesScraped: number; durationMs?: number } }
+  | { type: 'error'; message: string };
+
+export async function* extractUrlStream(
+  url: string,
+  options: { maxPages?: number } = {},
+): AsyncGenerator<ExtractStreamEvent> {
+  const apiKey = resolveApiKey();
+  if (!apiKey) {
+    throw new ApiError(
+      0,
+      'No API key configured. Run `knowledgesdk config --key <your-key>` or set the KNOWLEDGESDK_API_KEY environment variable.',
+    );
+  }
+
+  const endpoint = `${resolveBaseUrl()}/v1/extract/stream`;
+
+  const queue: ExtractStreamEvent[] = [];
+  let waitResolve: (() => void) | null = null;
+  let done = false;
+  let streamError: Error | null = null;
+  const controller = new AbortController();
+
+  const enqueue = (item: ExtractStreamEvent) => {
+    queue.push(item);
+    waitResolve?.();
+    waitResolve = null;
+  };
+
+  const finish = (err?: Error) => {
+    done = true;
+    streamError = err ?? null;
+    waitResolve?.();
+    waitResolve = null;
+  };
+
+  fetchEventSource(endpoint, {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'Content-Type': 'application/json',
+      Accept: 'text/event-stream',
+      'User-Agent': '@knowledgesdk/cli/0.1.0',
+    },
+    body: JSON.stringify({ url, ...options }),
+    signal: controller.signal,
+    async onopen(response) {
+      if (!response.ok) {
+        let body: unknown;
+        try { body = await response.json(); } catch { body = await response.text().catch(() => undefined); }
+        throw new ApiError(response.status, friendlyErrorMessage(response.status, body), body);
+      }
+    },
+    onmessage(ev) {
+      if (!ev.data) return;
+      try {
+        const parsed = JSON.parse(ev.data);
+        enqueue({ type: ev.event || 'message', ...parsed } as ExtractStreamEvent);
+      } catch {}
+    },
+    onclose() { finish(); },
+    onerror(err) {
+      finish(err instanceof Error ? err : new Error(String(err)));
+      throw err; // prevent automatic retry
+    },
+  }).catch((err) => {
+    if (!done) finish(err instanceof Error ? err : new Error(String(err)));
+  });
+
+  try {
+    while (!done || queue.length > 0) {
+      if (queue.length > 0) {
+        yield queue.shift()!;
+      } else {
+        await new Promise<void>((r) => { waitResolve = r; });
+      }
+    }
+  } finally {
+    controller.abort();
+  }
+
+  if (streamError) throw streamError;
 }
