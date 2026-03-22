@@ -5,44 +5,44 @@ A beautiful, fully-featured command-line interface for [KnowledgeSDK](https://kn
 ## Installation
 
 ```bash
-npm install -g @knowledgesdk/cli
+npm install -g @knowledge/cli
 ```
 
 Or use without installing:
 
 ```bash
-npx @knowledgesdk/cli <command>
+npx @knowledge/cli <command>
 ```
 
 ## Quick Start
 
 ```bash
 # 1. Set your API key
-npx knowledgesdk config --key sk_ks_your_key
+npx knowledge config --key sk_ks_your_key
 
 # 2. Extract knowledge from a website
-npx knowledgesdk extract https://stripe.com
+npx knowledge extract https://stripe.com
 
 # 3. Search your knowledge base
-npx knowledgesdk search "pricing plans"
+npx knowledge search "pricing plans"
 ```
 
 ## Configuration
 
-API keys are stored in `~/.knowledgesdk/config.json`.
+API keys are stored in `~/.knowledge/config.json`.
 
 ```bash
 # Set API key
-npx knowledgesdk config --key sk_ks_your_key
+npx knowledge config --key sk_ks_your_key
 
 # Set a custom API base URL
-npx knowledgesdk config --url https://api.myinstance.com
+npx knowledge config --url https://api.myinstance.com
 
 # View current config
-npx knowledgesdk config
+npx knowledge config
 
 # Clear stored config
-npx knowledgesdk config --clear
+npx knowledge config --clear
 ```
 
 You can also use environment variables instead of the config file:
@@ -60,22 +60,22 @@ Crawls a website and extracts structured knowledge from its pages.
 
 ```bash
 # Basic extraction (synchronous)
-npx knowledgesdk extract https://stripe.com
+npx knowledge extract https://stripe.com
 
 # Run asynchronously and get a job ID back
-npx knowledgesdk extract https://stripe.com --async
+npx knowledge extract https://stripe.com --async
 
 # Run asynchronously with a webhook callback
-npx knowledgesdk extract https://stripe.com --async --callback-url https://myapp.com/hook
+npx knowledge extract https://stripe.com --async --callback-url https://myapp.com/hook
 
 # Limit crawl depth
-npx knowledgesdk extract https://stripe.com --max-pages 20
+npx knowledge extract https://stripe.com --max-pages 20
 
 # Save result to a file
-npx knowledgesdk extract https://stripe.com --output result.json
+npx knowledge extract https://stripe.com --output result.json
 
 # Output raw JSON
-npx knowledgesdk extract https://stripe.com --json
+npx knowledge extract https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -93,9 +93,9 @@ npx knowledgesdk extract https://stripe.com --json
 Fetches a single page and returns its content as clean Markdown.
 
 ```bash
-npx knowledgesdk scrape https://docs.stripe.com
-npx knowledgesdk scrape https://docs.stripe.com --output content.md
-npx knowledgesdk scrape https://docs.stripe.com --json
+npx knowledge scrape https://docs.stripe.com
+npx knowledge scrape https://docs.stripe.com --output content.md
+npx knowledge scrape https://docs.stripe.com --json
 ```
 
 | Flag | Description |
@@ -110,8 +110,8 @@ npx knowledgesdk scrape https://docs.stripe.com --json
 Uses AI to classify a website into an industry/category.
 
 ```bash
-npx knowledgesdk classify https://stripe.com
-npx knowledgesdk classify https://stripe.com --json
+npx knowledge classify https://stripe.com
+npx knowledge classify https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -123,13 +123,13 @@ npx knowledgesdk classify https://stripe.com --json
 ### `sitemap` — Get a website's sitemap
 
 ```bash
-npx knowledgesdk sitemap https://stripe.com
+npx knowledge sitemap https://stripe.com
 
 # Limit the number of URLs shown
-npx knowledgesdk sitemap https://stripe.com --limit 50
+npx knowledge sitemap https://stripe.com --limit 50
 
 # Output raw JSON
-npx knowledgesdk sitemap https://stripe.com --json
+npx knowledge sitemap https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -142,8 +142,8 @@ npx knowledgesdk sitemap https://stripe.com --json
 ### `screenshot` — Take a screenshot
 
 ```bash
-npx knowledgesdk screenshot https://stripe.com
-npx knowledgesdk screenshot https://stripe.com --output screenshot.png
+npx knowledge screenshot https://stripe.com
+npx knowledge screenshot https://stripe.com --output screenshot.png
 ```
 
 | Flag | Description |
@@ -156,9 +156,9 @@ npx knowledgesdk screenshot https://stripe.com --output screenshot.png
 ### `search` — Search your knowledge base
 
 ```bash
-npx knowledgesdk search "pricing plans"
-npx knowledgesdk search "integration options" --limit 5
-npx knowledgesdk search "API documentation" --json
+npx knowledge search "pricing plans"
+npx knowledge search "integration options" --limit 5
+npx knowledge search "API documentation" --json
 ```
 
 | Flag | Description |
@@ -172,15 +172,15 @@ npx knowledgesdk search "API documentation" --json
 
 ```bash
 # List all webhooks
-npx knowledgesdk webhooks list
+npx knowledge webhooks list
 
 # Create a webhook
-npx knowledgesdk webhooks create \
+npx knowledge webhooks create \
   --url https://myapp.com/hook \
   --events EXTRACTION_COMPLETED,PAGE_SCRAPED
 
 # Delete a webhook
-npx knowledgesdk webhooks delete weh_xxx
+npx knowledge webhooks delete weh_xxx
 ```
 
 **Available events:**
@@ -199,16 +199,16 @@ npx knowledgesdk webhooks delete weh_xxx
 
 ```bash
 # Check job status once
-npx knowledgesdk jobs get job_xxx
+npx knowledge jobs get job_xxx
 
 # Poll until the job completes
-npx knowledgesdk jobs poll job_xxx
+npx knowledge jobs poll job_xxx
 
 # Poll with a custom interval (in ms)
-npx knowledgesdk jobs poll job_xxx --interval 5000
+npx knowledge jobs poll job_xxx --interval 5000
 
 # Output final result as JSON
-npx knowledgesdk jobs poll job_xxx --json
+npx knowledge jobs poll job_xxx --json
 ```
 
 ---

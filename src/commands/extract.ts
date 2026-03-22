@@ -47,7 +47,7 @@ export function registerExtractCommand(program: Command): void {
             printField('Status', colorizeStatus(result.status));
             printField('URL', result.url);
             console.log('');
-            printInfo(`Poll for results: knowledgesdk jobs poll ${result.jobId}`);
+            printInfo(`Poll for results: knowledge jobs poll ${result.jobId}`);
             console.log('');
             if (opts.output) saveToFile(opts.output, JSON.stringify(result, null, 2));
           } catch (err) {

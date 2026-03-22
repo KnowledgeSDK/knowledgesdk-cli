@@ -28,7 +28,7 @@ function friendlyErrorMessage(status: number, body: unknown): string {
     case 401:
       return (
         bodyMsg ??
-        'Invalid API key. Run `knowledgesdk config --key <your-key>` to set your API key.'
+        'Invalid API key. Run `knowledge config --key <your-key>` to set your API key.'
       );
     case 403:
       return bodyMsg ?? 'Access forbidden. Check your API key permissions.';
@@ -62,7 +62,7 @@ async function apiFetch<T>(
   if (!apiKey) {
     throw new ApiError(
       0,
-      'No API key configured. Run `knowledgesdk config --key <your-key>` or set the KNOWLEDGESDK_API_KEY environment variable.',
+      'No API key configured. Run `knowledge config --key <your-key>` or set the KNOWLEDGESDK_API_KEY environment variable.',
     );
   }
 
@@ -72,7 +72,7 @@ async function apiFetch<T>(
   const headers: Record<string, string> = {
     'x-api-key': apiKey,
     'Content-Type': 'application/json',
-    'User-Agent': '@knowledgesdk/cli/0.1.0',
+    'User-Agent': '@knowledge/cli/0.1.0',
     ...(options.headers as Record<string, string> | undefined),
   };
 
@@ -220,7 +220,7 @@ export async function* extractUrlStream(
   if (!apiKey) {
     throw new ApiError(
       0,
-      'No API key configured. Run `knowledgesdk config --key <your-key>` or set the KNOWLEDGESDK_API_KEY environment variable.',
+      'No API key configured. Run `knowledge config --key <your-key>` or set the KNOWLEDGESDK_API_KEY environment variable.',
     );
   }
 
@@ -251,7 +251,7 @@ export async function* extractUrlStream(
       'x-api-key': apiKey,
       'Content-Type': 'application/json',
       Accept: 'text/event-stream',
-      'User-Agent': '@knowledgesdk/cli/0.1.0',
+      'User-Agent': '@knowledge/cli/0.1.0',
     },
     body: JSON.stringify({ url, ...options }),
     signal: controller.signal,

@@ -147,7 +147,7 @@ export function handleApiError(err: unknown): never {
     printError(err.message);
     if (apiErr.statusCode === 0) {
       // No API key
-      printInfo('Run: knowledgesdk config --key <your-api-key>');
+      printInfo('Run: knowledge config --key <your-api-key>');
       printInfo('Or set: export KNOWLEDGESDK_API_KEY=<your-api-key>');
     }
   } else if (err instanceof Error) {

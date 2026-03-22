@@ -49,7 +49,7 @@ export function registerWebhooksCommand(program: Command): void {
             `  ${sym.info} ${theme.muted('No webhooks configured.')}`,
           );
           console.log(
-            `  ${theme.muted('Create one with:')} knowledgesdk webhooks create --url <url> --events <events>`,
+            `  ${theme.muted('Create one with:')} knowledge webhooks create --url <url> --events <events>`,
           );
           console.log('');
           return;
