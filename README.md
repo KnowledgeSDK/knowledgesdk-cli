@@ -21,7 +21,7 @@ npx @knowledgesdk/cli <command>
 npx knowledgesdk config --key sk_ks_your_key
 
 # 2. Extract knowledge from a website
-npx knowledgesdk extract https://competitor.com
+npx knowledgesdk extract https://stripe.com
 
 # 3. Search your knowledge base
 npx knowledgesdk search "pricing plans"
@@ -60,22 +60,22 @@ Crawls a website and extracts structured knowledge from its pages.
 
 ```bash
 # Basic extraction (synchronous)
-npx knowledgesdk extract https://competitor.com
+npx knowledgesdk extract https://stripe.com
 
 # Run asynchronously and get a job ID back
-npx knowledgesdk extract https://competitor.com --async
+npx knowledgesdk extract https://stripe.com --async
 
 # Run asynchronously with a webhook callback
-npx knowledgesdk extract https://competitor.com --async --callback-url https://myapp.com/hook
+npx knowledgesdk extract https://stripe.com --async --callback-url https://myapp.com/hook
 
 # Limit crawl depth
-npx knowledgesdk extract https://competitor.com --max-pages 20
+npx knowledgesdk extract https://stripe.com --max-pages 20
 
 # Save result to a file
-npx knowledgesdk extract https://competitor.com --output result.json
+npx knowledgesdk extract https://stripe.com --output result.json
 
 # Output raw JSON
-npx knowledgesdk extract https://competitor.com --json
+npx knowledgesdk extract https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -93,9 +93,9 @@ npx knowledgesdk extract https://competitor.com --json
 Fetches a single page and returns its content as clean Markdown.
 
 ```bash
-npx knowledgesdk scrape https://docs.example.com
-npx knowledgesdk scrape https://docs.example.com --output content.md
-npx knowledgesdk scrape https://docs.example.com --json
+npx knowledgesdk scrape https://docs.stripe.com
+npx knowledgesdk scrape https://docs.stripe.com --output content.md
+npx knowledgesdk scrape https://docs.stripe.com --json
 ```
 
 | Flag | Description |
@@ -110,8 +110,8 @@ npx knowledgesdk scrape https://docs.example.com --json
 Uses AI to classify a website into an industry/category.
 
 ```bash
-npx knowledgesdk classify https://example.com
-npx knowledgesdk classify https://example.com --json
+npx knowledgesdk classify https://stripe.com
+npx knowledgesdk classify https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -123,13 +123,13 @@ npx knowledgesdk classify https://example.com --json
 ### `sitemap` — Get a website's sitemap
 
 ```bash
-npx knowledgesdk sitemap https://example.com
+npx knowledgesdk sitemap https://stripe.com
 
 # Limit the number of URLs shown
-npx knowledgesdk sitemap https://example.com --limit 50
+npx knowledgesdk sitemap https://stripe.com --limit 50
 
 # Output raw JSON
-npx knowledgesdk sitemap https://example.com --json
+npx knowledgesdk sitemap https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -142,8 +142,8 @@ npx knowledgesdk sitemap https://example.com --json
 ### `screenshot` — Take a screenshot
 
 ```bash
-npx knowledgesdk screenshot https://example.com
-npx knowledgesdk screenshot https://example.com --output screenshot.png
+npx knowledgesdk screenshot https://stripe.com
+npx knowledgesdk screenshot https://stripe.com --output screenshot.png
 ```
 
 | Flag | Description |

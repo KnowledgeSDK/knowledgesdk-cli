@@ -25,7 +25,7 @@ program
       '',
       `  ${theme.label('Quickstart')}`,
       `  ${theme.dim('1.')} knowledgesdk config --key sk_ks_your_key`,
-      `  ${theme.dim('2.')} knowledgesdk extract https://example.com`,
+      `  ${theme.dim('2.')} knowledgesdk extract https://stripe.com`,
       '',
     ].join('\n'),
   )
