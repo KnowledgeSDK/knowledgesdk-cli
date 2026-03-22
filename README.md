@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="https://knowledgesdk.com/knowledgesdk_light.svg" alt="KnowledgeSDK" width="300" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://knowledgesdk.com/knowledgesdk_light.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://knowledgesdk.com/knowledgesdk_dark.svg" />
+    <img src="https://knowledgesdk.com/knowledgesdk_dark.svg" alt="KnowledgeSDK" width="300" />
+  </picture>
 </p>
 
 <p align="center">
