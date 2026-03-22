@@ -16,7 +16,7 @@ import { resolveApiKey } from './lib/config.js';
 const program = new Command();
 
 program
-  .name('knowledge')
+  .name('knowledgesdk')
   .description(
     [
       '',
@@ -24,8 +24,8 @@ program
       theme.muted('  Extract, scrape, classify, and search website knowledge'),
       '',
       `  ${theme.label('Quickstart')}`,
-      `  ${theme.dim('1.')} knowledge config --key sk_ks_your_key`,
-      `  ${theme.dim('2.')} knowledge extract https://stripe.com`,
+      `  ${theme.dim('1.')} knowledgesdk config --key sk_ks_your_key`,
+      `  ${theme.dim('2.')} knowledgesdk extract https://stripe.com`,
       '',
     ].join('\n'),
   )
@@ -55,7 +55,7 @@ registerJobsCommand(program);
 program.on('command:*', (operands: string[]) => {
   printError(
     `Unknown command: ${operands[0]}`,
-    'Run `knowledge --help` to see available commands.',
+    'Run `knowledgesdk --help` to see available commands.',
   );
   process.exit(1);
 });
@@ -73,7 +73,7 @@ if (!noKeyNeeded.includes(firstArg) && !resolveApiKey()) {
         [
           '',
           `  ${theme.warning('No API key configured.')}`,
-          `  ${theme.muted('Set your key:')} knowledge config --key sk_ks_your_key`,
+          `  ${theme.muted('Set your key:')} knowledgesdk config --key sk_ks_your_key`,
           `  ${theme.muted('Or export:')}   KNOWLEDGESDK_API_KEY=sk_ks_your_key`,
           '',
         ].join('\n'),

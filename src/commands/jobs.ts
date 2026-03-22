@@ -111,7 +111,7 @@ export function registerJobsCommand(program: Command): void {
               spinner.stop();
               printError(
                 `Timed out after ${MAX_POLL_ATTEMPTS} polling attempts.`,
-                `Check status manually: knowledge jobs get ${jobId}`,
+                `Check status manually: knowledgesdk jobs get ${jobId}`,
               );
               process.exit(1);
             }

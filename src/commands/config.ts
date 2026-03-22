@@ -20,7 +20,7 @@ export function registerConfigCommand(program: Command): void {
     .command('config')
     .description('Manage CLI configuration (API key, base URL)');
 
-  // knowledge config --key sk_ks_xxx
+  // knowledgesdk config --key sk_ks_xxx
   config
     .option('-k, --key <apiKey>', 'Set your KnowledgeSDK API key')
     .option('-u, --url <baseUrl>', 'Set a custom API base URL')
@@ -83,7 +83,7 @@ export function registerConfigCommand(program: Command): void {
       } else {
         printField('API Key', theme.error('not set'));
         printInfo(
-          'Set your key: knowledge config --key <your-api-key>',
+          'Set your key: knowledgesdk config --key <your-api-key>',
         );
       }
       printField('Base URL', baseUrl);

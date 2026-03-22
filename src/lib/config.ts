@@ -3,7 +3,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import type { CLIConfig } from '../types.js';
 
-const CONFIG_DIR = join(homedir(), '.knowledge');
+const CONFIG_DIR = join(homedir(), '.knowledgesdk');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 
 export const DEFAULT_BASE_URL = 'https://api.knowledgesdk.com';

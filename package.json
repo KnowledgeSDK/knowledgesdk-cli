@@ -1,11 +1,11 @@
 {
-  "name": "@knowledge/cli",
+  "name": "@knowledgesdk/cli",
   "version": "0.1.0",
   "description": "CLI tool for KnowledgeSDK - extract, scrape, classify, search and manage knowledge from websites",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "knowledge": "./dist/index.js"
+    "knowledgesdk": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -14,9 +14,9 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "knowledge",
-    "cli",
     "knowledgesdk",
+    "cli",
+    "knowledge",
     "extract",
     "scrape",
     "ai"
