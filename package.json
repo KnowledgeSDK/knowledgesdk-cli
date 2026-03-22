@@ -21,6 +21,10 @@
     "scrape",
     "ai"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knowledgesdk/knowledgesdk-cli.git"
+  },
   "author": "KnowledgeSDK",
   "license": "MIT",
   "dependencies": {
