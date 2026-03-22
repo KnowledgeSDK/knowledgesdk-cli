@@ -43,7 +43,6 @@ jobs:
           npm version ${{ github.event.inputs.version_bump }}
           git push && git push --tags
 
-      - name: Remove token placeholder so npm uses OIDC
-        run: npm config delete //registry.npmjs.org/:_authToken
-
       - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
