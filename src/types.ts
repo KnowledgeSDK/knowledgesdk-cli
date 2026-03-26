@@ -13,16 +13,29 @@ export interface ApiError {
   statusCode?: number;
 }
 
-// ─── Extraction ───────────────────────────────────────────────────────────────
+// ─── Extract (single URL → markdown, previously "scrape") ────────────────────
 
 export interface ExtractOptions {
+  output?: string;
+}
+
+export interface ExtractResult {
+  url: string;
+  markdown: string;
+  title?: string;
+  metadata?: Record<string, unknown>;
+}
+
+// ─── Business (full AI extraction, previously "extract") ─────────────────────
+
+export interface BusinessOptions {
   async?: boolean;
   callbackUrl?: string;
   maxPages?: number;
   output?: string;
 }
 
-export interface ExtractionJob {
+export interface BusinessJob {
   jobId: string;
   status: JobStatus;
   url: string;
@@ -47,20 +60,7 @@ export interface PageResult {
   metadata?: Record<string, unknown>;
 }
 
-// ─── Scrape ───────────────────────────────────────────────────────────────────
-
-export interface ScrapeOptions {
-  output?: string;
-}
-
-export interface ScrapeResult {
-  url: string;
-  markdown: string;
-  title?: string;
-  metadata?: Record<string, unknown>;
-}
-
-// ─── Classify ─────────────────────────────────────────────────────────────────
+// ─── Classify (deprecated — absorbed into business) ──────────────────────────
 
 export interface ClassifyOptions {
   json?: boolean;

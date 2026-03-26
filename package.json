@@ -1,7 +1,7 @@
 {
   "name": "@knowledgesdk/cli",
-  "version": "0.2.5",
-  "description": "CLI tool for KnowledgeSDK - extract, scrape, classify, search and manage knowledge from websites",
+  "version": "0.2.6",
+  "description": "CLI tool for KnowledgeSDK - extract, business analysis, search and manage knowledge from websites",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -18,7 +18,7 @@
     "cli",
     "knowledge",
     "extract",
-    "scrape",
+    "business",
     "ai"
   ],
   "repository": {

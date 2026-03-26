@@ -8,7 +8,7 @@
 
 <p align="center">
   <b>Official CLI for <a href="https://knowledgesdk.com">KnowledgeSDK</a></b><br/>
-  Extract, scrape, classify, search, and manage knowledge from any website — right from your terminal.
+  Extract, analyze, search, and manage knowledge from any website — right from your terminal.
 </p>
 
 <p align="center">
@@ -26,12 +26,11 @@
 
 **KnowledgeSDK** is an API that turns any website into structured, searchable knowledge — built for developers, AI agents, and data pipelines.
 
-- 🔍 **Extract** — Crawl & extract structured knowledge from any website
-- 📄 **Scrape** — Convert any URL to clean Markdown
-- 🏢 **Classify** — AI-powered business classification from a URL
-- 📸 **Screenshot** — Full-page screenshots of any website
-- 🗺️ **Sitemap** — Discover all URLs on a domain
-- 🧠 **Search** — Semantic search across your extracted knowledge base
+- **Extract** — Convert any URL to clean Markdown
+- **Business** — Full AI-powered business extraction (crawl, classify, and extract)
+- **Screenshot** — Full-page screenshots of any website
+- **Sitemap** — Discover all URLs on a domain
+- **Search** — Semantic search across your extracted knowledge base
 
 > [Get your API key](https://knowledgesdk.com/connect)
 
@@ -51,12 +50,15 @@ npx @knowledgesdk/cli <command>
 
 ```bash
 # 1. Set your API key
-npx knowledgesdk config --key sk_ks_your_key
+npx knowledgesdk config --key knowledgesdk_live_your_key
 
-# 2. Extract knowledge from a website
-npx knowledgesdk extract https://stripe.com
+# 2. Extract a page to markdown
+npx knowledgesdk extract https://docs.stripe.com
 
-# 3. Search your knowledge base
+# 3. Run full business extraction
+npx knowledgesdk business https://stripe.com
+
+# 4. Search your knowledge base
 npx knowledgesdk search "pricing plans"
 ```
 
@@ -66,7 +68,7 @@ API keys are stored in `~/.knowledgesdk/config.json`.
 
 ```bash
 # Set API key
-npx knowledgesdk config --key sk_ks_your_key
+npx knowledgesdk config --key knowledgesdk_live_your_key
 
 # Set a custom API base URL
 npx knowledgesdk config --url https://api.myinstance.com
@@ -81,54 +83,20 @@ npx knowledgesdk config --clear
 You can also use environment variables instead of the config file:
 
 ```bash
-export KNOWLEDGESDK_API_KEY=sk_ks_your_key
+export KNOWLEDGESDK_API_KEY=knowledgesdk_live_your_key
 export KNOWLEDGESDK_BASE_URL=https://api.knowledgesdk.com  # optional
 ```
 
 ## Commands
 
-### `extract` — Extract knowledge from a website
-
-Crawls a website and extracts structured knowledge from its pages.
-
-```bash
-# Basic extraction (synchronous)
-npx knowledgesdk extract https://stripe.com
-
-# Run asynchronously and get a job ID back
-npx knowledgesdk extract https://stripe.com --async
-
-# Run asynchronously with a webhook callback
-npx knowledgesdk extract https://stripe.com --async --callback-url https://myapp.com/hook
-
-# Limit crawl depth
-npx knowledgesdk extract https://stripe.com --max-pages 20
-
-# Save result to a file
-npx knowledgesdk extract https://stripe.com --output result.json
-
-# Output raw JSON
-npx knowledgesdk extract https://stripe.com --json
-```
-
-| Flag | Description |
-|------|-------------|
-| `--async` | Run asynchronously; returns a job ID |
-| `--callback-url <url>` | Webhook URL to notify when done |
-| `--max-pages <n>` | Maximum pages to crawl |
-| `--output <file>` | Save JSON result to file |
-| `--json` | Output raw JSON |
-
----
-
-### `scrape` — Scrape a URL to Markdown
+### `extract` — Extract a URL to Markdown
 
 Fetches a single page and returns its content as clean Markdown.
 
 ```bash
-npx knowledgesdk scrape https://docs.stripe.com
-npx knowledgesdk scrape https://docs.stripe.com --output content.md
-npx knowledgesdk scrape https://docs.stripe.com --json
+npx knowledgesdk extract https://docs.stripe.com
+npx knowledgesdk extract https://docs.stripe.com --output content.md
+npx knowledgesdk extract https://docs.stripe.com --json
 ```
 
 | Flag | Description |
@@ -138,9 +106,44 @@ npx knowledgesdk scrape https://docs.stripe.com --json
 
 ---
 
-### `classify` — Classify a business
+### `business` — Full AI business extraction
 
-Uses AI to classify a website into an industry/category.
+Crawls a website, classifies the business, and extracts structured knowledge from its pages.
+
+```bash
+# Basic extraction (streams by default)
+npx knowledgesdk business https://stripe.com
+
+# Run asynchronously and get a job ID back
+npx knowledgesdk business https://stripe.com --async
+
+# Run asynchronously with a webhook callback
+npx knowledgesdk business https://stripe.com --async --callback-url https://myapp.com/hook
+
+# Limit crawl depth
+npx knowledgesdk business https://stripe.com --max-pages 20
+
+# Save result to a file
+npx knowledgesdk business https://stripe.com --output result.json
+
+# Output raw JSON
+npx knowledgesdk business https://stripe.com --json
+```
+
+| Flag | Description |
+|------|-------------|
+| `--async` | Run asynchronously; returns a job ID |
+| `--callback-url <url>` | Webhook URL to notify when done |
+| `--max-pages <n>` | Maximum pages to crawl |
+| `--output <file>` | Save JSON result to file |
+| `--no-stream` | Disable live streaming and wait synchronously |
+| `--json` | Output raw JSON |
+
+---
+
+### `classify` — Classify a business (deprecated)
+
+> **Deprecated:** Classification is now included in the `business` command. This command will be removed in a future release.
 
 ```bash
 npx knowledgesdk classify https://stripe.com
@@ -297,7 +300,7 @@ Full API reference → **<https://knowledgesdk.com/docs>**
 
 ## Contributing
 
-We ❤️ PRs!
+We love PRs!
 
 1. **Fork** → `git checkout -b feat/awesome`
 2. Add tests & docs

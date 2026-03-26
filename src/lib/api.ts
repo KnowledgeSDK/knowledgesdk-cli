@@ -129,9 +129,9 @@ export async function apiDelete<T>(path: string): Promise<T> {
 
 import type {
   ClassifyResult,
-  ExtractionJob,
+  BusinessJob,
   Job,
-  ScrapeResult,
+  ExtractResult,
   SearchResult,
   SitemapResult,
   ScreenshotResult,
@@ -140,15 +140,25 @@ import type {
   WebhookEvent,
 } from '../types.js';
 
-export async function extractUrl(
+/**
+ * POST /v1/extract — single URL to markdown (previously "scrape").
+ */
+export async function extractUrl(url: string): Promise<ExtractResult> {
+  return apiPost<ExtractResult>('/v1/extract', { url });
+}
+
+/**
+ * POST /v1/business — full AI business extraction (previously "extract").
+ */
+export async function businessExtract(
   url: string,
   options: {
     async?: boolean;
     callbackUrl?: string;
     maxPages?: number;
   } = {},
-): Promise<ExtractionJob> {
-  return apiPost<ExtractionJob>('/v1/extract', {
+): Promise<BusinessJob> {
+  return apiPost<BusinessJob>('/v1/business', {
     url,
     async: options.async,
     callbackUrl: options.callbackUrl,
@@ -156,10 +166,9 @@ export async function extractUrl(
   });
 }
 
-export async function scrapeUrl(url: string): Promise<ScrapeResult> {
-  return apiPost<ScrapeResult>('/v1/scrape', { url });
-}
-
+/**
+ * POST /v1/classify — deprecated, use /v1/business instead.
+ */
 export async function classifyUrl(url: string): Promise<ClassifyResult> {
   return apiPost<ClassifyResult>('/v1/classify', { url });
 }
@@ -202,7 +211,7 @@ export async function getJob(jobId: string): Promise<Job> {
 
 // ─── SSE streaming ────────────────────────────────────────────────────────────
 
-export type ExtractStreamEvent =
+export type BusinessStreamEvent =
   | { type: 'connected'; message: string }
   | { type: 'progress'; message: string }
   | { type: 'business_classified'; business: { businessName: string; businessType: string } }
@@ -212,10 +221,13 @@ export type ExtractStreamEvent =
   | { type: 'complete'; result: { business: { businessName: string }; knowledgeItems: unknown[]; pagesScraped: number; durationMs?: number } }
   | { type: 'error'; message: string };
 
-export async function* extractUrlStream(
+/**
+ * POST /v1/business/stream — streamed full AI extraction (previously /v1/extract/stream).
+ */
+export async function* businessExtractStream(
   url: string,
   options: { maxPages?: number } = {},
-): AsyncGenerator<ExtractStreamEvent> {
+): AsyncGenerator<BusinessStreamEvent> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
     throw new ApiError(
@@ -224,15 +236,15 @@ export async function* extractUrlStream(
     );
   }
 
-  const endpoint = `${resolveBaseUrl()}/v1/extract/stream`;
+  const endpoint = `${resolveBaseUrl()}/v1/business/stream`;
 
-  const queue: ExtractStreamEvent[] = [];
+  const queue: BusinessStreamEvent[] = [];
   let waitResolve: (() => void) | null = null;
   let done = false;
   let streamError: Error | null = null;
   const controller = new AbortController();
 
-  const enqueue = (item: ExtractStreamEvent) => {
+  const enqueue = (item: BusinessStreamEvent) => {
     queue.push(item);
     waitResolve?.();
     waitResolve = null;
@@ -266,7 +278,7 @@ export async function* extractUrlStream(
       if (!ev.data) return;
       try {
         const parsed = JSON.parse(ev.data);
-        enqueue({ type: ev.event || 'message', ...parsed } as ExtractStreamEvent);
+        enqueue({ type: ev.event || 'message', ...parsed } as BusinessStreamEvent);
       } catch {}
     },
     onclose() { finish(); },

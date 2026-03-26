@@ -7,6 +7,7 @@ import {
   printField,
   printHeader,
   printJson,
+  printWarning,
   theme,
 } from '../lib/output.js';
 import type { ClassifyOptions } from '../types.js';
@@ -14,9 +15,21 @@ import type { ClassifyOptions } from '../types.js';
 export function registerClassifyCommand(program: Command): void {
   program
     .command('classify <url>')
-    .description('Classify a business/website into a category')
+    .description('Classify a business/website into a category (deprecated — use `business` instead)')
     .option('--json', 'Output raw JSON')
     .action(async (url: string, opts: ClassifyOptions) => {
+      console.log('');
+      printWarning(
+        'The `classify` command is deprecated and will be removed in a future release.',
+      );
+      console.log(
+        `  ${theme.muted('Classification is now included in the')} ${theme.bold('business')} ${theme.muted('command.')}`,
+      );
+      console.log(
+        `  ${theme.muted('Run:')} knowledgesdk business ${url}`,
+      );
+      console.log('');
+
       const spinner = ora({
         text: `Classifying ${theme.url(url)}…`,
         color: 'cyan',

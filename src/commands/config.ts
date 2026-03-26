@@ -20,7 +20,7 @@ export function registerConfigCommand(program: Command): void {
     .command('config')
     .description('Manage CLI configuration (API key, base URL)');
 
-  // knowledgesdk config --key sk_ks_xxx
+  // knowledgesdk config --key knowledgesdk_live_xxx
   config
     .option('-k, --key <apiKey>', 'Set your KnowledgeSDK API key')
     .option('-u, --url <baseUrl>', 'Set a custom API base URL')
@@ -37,10 +37,10 @@ export function registerConfigCommand(program: Command): void {
         const updates: { apiKey?: string; baseUrl?: string } = {};
 
         if (opts.key) {
-          if (!opts.key.startsWith('sk_')) {
+          if (!opts.key.startsWith('knowledgesdk_')) {
             printError(
               'API key format looks incorrect.',
-              'Keys typically start with sk_ks_...',
+              'Keys should start with knowledgesdk_live_ or knowledgesdk_test_',
             );
             process.exit(1);
           }

@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import { registerConfigCommand } from './commands/config.js';
 import { registerExtractCommand } from './commands/extract.js';
-import { registerScrapeCommand } from './commands/scrape.js';
+import { registerBusinessCommand } from './commands/business.js';
 import { registerClassifyCommand } from './commands/classify.js';
 import { registerSitemapCommand } from './commands/sitemap.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
@@ -21,11 +21,12 @@ program
     [
       '',
       theme.brand.bold('  KnowledgeSDK CLI'),
-      theme.muted('  Extract, scrape, classify, and search website knowledge'),
+      theme.muted('  Extract, analyze, and search website knowledge'),
       '',
       `  ${theme.label('Quickstart')}`,
-      `  ${theme.dim('1.')} knowledgesdk config --key sk_ks_your_key`,
-      `  ${theme.dim('2.')} knowledgesdk extract https://stripe.com`,
+      `  ${theme.dim('1.')} knowledgesdk config --key knowledgesdk_live_your_key`,
+      `  ${theme.dim('2.')} knowledgesdk extract https://docs.stripe.com`,
+      `  ${theme.dim('3.')} knowledgesdk business https://stripe.com`,
       '',
     ].join('\n'),
   )
@@ -43,7 +44,7 @@ program
 // Register all sub-commands
 registerConfigCommand(program);
 registerExtractCommand(program);
-registerScrapeCommand(program);
+registerBusinessCommand(program);
 registerClassifyCommand(program);
 registerSitemapCommand(program);
 registerScreenshotCommand(program);
@@ -73,8 +74,8 @@ if (!noKeyNeeded.includes(firstArg) && !resolveApiKey()) {
         [
           '',
           `  ${theme.warning('No API key configured.')}`,
-          `  ${theme.muted('Set your key:')} knowledgesdk config --key sk_ks_your_key`,
-          `  ${theme.muted('Or export:')}   KNOWLEDGESDK_API_KEY=sk_ks_your_key`,
+          `  ${theme.muted('Set your key:')} knowledgesdk config --key knowledgesdk_live_your_key`,
+          `  ${theme.muted('Or export:')}   KNOWLEDGESDK_API_KEY=knowledgesdk_live_your_key`,
           '',
         ].join('\n'),
       );

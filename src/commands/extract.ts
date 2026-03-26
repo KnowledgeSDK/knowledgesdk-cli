@@ -1,12 +1,10 @@
 import { Command } from 'commander';
 import ora from 'ora';
-import { extractUrl, extractUrlStream } from '../lib/api.js';
+import { extractUrl } from '../lib/api.js';
 import {
-  colorizeStatus,
   handleApiError,
   printField,
   printHeader,
-  printInfo,
   printJson,
   saveToFile,
   theme,
@@ -16,131 +14,48 @@ import type { ExtractOptions } from '../types.js';
 export function registerExtractCommand(program: Command): void {
   program
     .command('extract <url>')
-    .description('Extract structured knowledge from a website')
-    .option('-a, --async', 'Run extraction asynchronously (returns a job ID)')
-    .option(
-      '-c, --callback-url <url>',
-      'Webhook URL to call when extraction completes',
-    )
-    .option('-m, --max-pages <number>', 'Maximum number of pages to crawl', parseInt)
-    .option('-o, --output <file>', 'Save result to a file (JSON)')
-    .option('--no-stream', 'Disable live streaming and wait synchronously')
-    .option('--json', 'Output raw JSON')
-    .action(
-      async (
-        url: string,
-        opts: ExtractOptions & { json?: boolean; stream?: boolean },
-      ) => {
-        // ── Async mode: fire and forget ──────────────────────────────────────
-        if (opts.async) {
-          const spinner = ora({ text: `Queuing extraction for ${theme.url(url)}…`, color: 'cyan' }).start();
-          try {
-            const result = await extractUrl(url, {
-              async: true,
-              callbackUrl: opts.callbackUrl,
-              maxPages: opts.maxPages,
-            });
-            spinner.stop();
-            if (opts.json) { printJson(result); return; }
-            printHeader('Extraction queued');
-            printField('Job ID', result.jobId);
-            printField('Status', colorizeStatus(result.status));
-            printField('URL', result.url);
-            console.log('');
-            printInfo(`Poll for results: knowledgesdk jobs poll ${result.jobId}`);
-            console.log('');
-            if (opts.output) saveToFile(opts.output, JSON.stringify(result, null, 2));
-          } catch (err) {
-            spinner.stop();
-            handleApiError(err);
-          }
+    .description('Extract a single URL and return its content as Markdown')
+    .option('-o, --output <file>', 'Save markdown to a file')
+    .option('--json', 'Output raw JSON including metadata')
+    .action(async (url: string, opts: ExtractOptions & { json?: boolean }) => {
+      const spinner = ora({
+        text: `Extracting ${theme.url(url)}…`,
+        color: 'cyan',
+      }).start();
+
+      try {
+        const result = await extractUrl(url);
+
+        spinner.stop();
+
+        if (opts.json) {
+          printJson(result);
           return;
         }
 
-        // ── Streaming mode (default) ─────────────────────────────────────────
-        if (opts.stream !== false) {
-          const spinner = ora({ text: `Connecting to ${theme.url(url)}…`, color: 'cyan' }).start();
-          const startTime = Date.now();
-          let businessName = '';
-          let finalResult: any = null;
-
-          try {
-            for await (const event of extractUrlStream(url, { maxPages: opts.maxPages })) {
-              switch (event.type) {
-                case 'connected':
-                  spinner.text = `Classifying ${theme.url(url)}…`;
-                  break;
-                case 'business_classified':
-                  businessName = event.business.businessName;
-                  spinner.text = `Classified: ${theme.bold(businessName)}`;
-                  break;
-                case 'progress':
-                  spinner.text = event.message;
-                  break;
-                case 'pages_planned':
-                  spinner.text = `Planned ${event.pages.length} pages to scrape…`;
-                  break;
-                case 'page_scraped':
-                  spinner.text = `Scraping page ${event.index + 1}/${event.total}: ${theme.dim(event.url)}`;
-                  break;
-                case 'complete':
-                  finalResult = event.result;
-                  break;
-                case 'error':
-                  throw new Error(event.message);
-              }
-            }
-
-            const durationSec = ((Date.now() - startTime) / 1000).toFixed(1);
-            const label = businessName || url;
-            const pages = finalResult?.pagesScraped ?? 0;
-            const items = Array.isArray(finalResult?.knowledgeItems) ? finalResult.knowledgeItems.length : 0;
-            spinner.succeed(`${theme.bold(label)} — ${pages} pages · ${items} knowledge items · ${durationSec}s`);
-
-            if (opts.json) { printJson(finalResult); return; }
-
-            if (finalResult) {
-              console.log('');
-              printHeader('Extraction complete');
-              printField('Pages scraped', String(pages));
-              printField('Knowledge items', String(items));
-              printField('Duration', `${durationSec}s`);
-            }
-
-            console.log('');
-            if (opts.output && finalResult) saveToFile(opts.output, JSON.stringify(finalResult, null, 2));
-          } catch (err) {
-            spinner.fail();
-            handleApiError(err);
-          }
+        if (opts.output) {
+          // Save raw markdown
+          saveToFile(opts.output, result.markdown);
           return;
         }
 
-        // ── Sync fallback (--no-stream) ──────────────────────────────────────
-        const spinner = ora({ text: `Extracting knowledge from ${theme.url(url)}…`, color: 'cyan' }).start();
-        try {
-          const result = await extractUrl(url, {
-            async: false,
-            callbackUrl: opts.callbackUrl,
-            maxPages: opts.maxPages,
-          });
-          spinner.stop();
-          if (opts.json) { printJson(result); return; }
-          printHeader('Extraction result');
-          printField('Job ID', result.jobId);
-          printField('Status', colorizeStatus(result.status));
-          printField('URL', result.url);
-          printField('Created', result.createdAt);
-          if (result.status === 'COMPLETED' && result.result) {
-            printField('Total pages', result.result.totalPages);
-          }
-          if (result.completedAt) printField('Completed', result.completedAt);
-          console.log('');
-          if (opts.output) saveToFile(opts.output, JSON.stringify(result, null, 2));
-        } catch (err) {
-          spinner.stop();
-          handleApiError(err);
-        }
-      },
-    );
+        // Pretty print
+        printHeader('Extract result');
+        printField('URL', result.url);
+        if (result.title) printField('Title', result.title);
+        console.log('');
+        console.log(theme.label('  Content (Markdown):'));
+        console.log(theme.dim('  ' + '─'.repeat(50)));
+        // Print first 3000 chars to avoid flooding the terminal
+        const preview =
+          result.markdown.length > 3000
+            ? result.markdown.slice(0, 3000) + '\n\n…(truncated, use --output to save full content)'
+            : result.markdown;
+        console.log(preview);
+        console.log('');
+      } catch (err) {
+        spinner.stop();
+        handleApiError(err);
+      }
+    });
 }
