@@ -4,7 +4,6 @@ import { Command } from 'commander';
 import { registerConfigCommand } from './commands/config.js';
 import { registerExtractCommand } from './commands/extract.js';
 import { registerBusinessCommand } from './commands/business.js';
-import { registerClassifyCommand } from './commands/classify.js';
 import { registerSitemapCommand } from './commands/sitemap.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
 import { registerSearchCommand } from './commands/search.js';
@@ -45,7 +44,6 @@ program
 registerConfigCommand(program);
 registerExtractCommand(program);
 registerBusinessCommand(program);
-registerClassifyCommand(program);
 registerSitemapCommand(program);
 registerScreenshotCommand(program);
 registerSearchCommand(program);

@@ -13,7 +13,7 @@ export interface ApiError {
   statusCode?: number;
 }
 
-// ─── Extract (single URL → markdown, previously "scrape") ────────────────────
+// ─── Extract (single URL → markdown) ─────────────────────────────────────────
 
 export interface ExtractOptions {
   output?: string;
@@ -26,7 +26,7 @@ export interface ExtractResult {
   metadata?: Record<string, unknown>;
 }
 
-// ─── Business (full AI extraction, previously "extract") ─────────────────────
+// ─── Business (full AI extraction) ───────────────────────────────────────────
 
 export interface BusinessOptions {
   async?: boolean;
@@ -57,22 +57,6 @@ export interface PageResult {
   title?: string;
   content?: string;
   markdown?: string;
-  metadata?: Record<string, unknown>;
-}
-
-// ─── Classify (deprecated — absorbed into business) ──────────────────────────
-
-export interface ClassifyOptions {
-  json?: boolean;
-}
-
-export interface ClassifyResult {
-  url: string;
-  category: string;
-  subcategory?: string;
-  confidence: number;
-  tags?: string[];
-  description?: string;
   metadata?: Record<string, unknown>;
 }
 

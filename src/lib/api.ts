@@ -128,7 +128,6 @@ export async function apiDelete<T>(path: string): Promise<T> {
 // ─── Specific endpoint helpers ────────────────────────────────────────────────
 
 import type {
-  ClassifyResult,
   BusinessJob,
   Job,
   ExtractResult,
@@ -141,14 +140,14 @@ import type {
 } from '../types.js';
 
 /**
- * POST /v1/extract — single URL to markdown (previously "scrape").
+ * POST /v1/extract — single URL to markdown.
  */
 export async function extractUrl(url: string): Promise<ExtractResult> {
   return apiPost<ExtractResult>('/v1/extract', { url });
 }
 
 /**
- * POST /v1/business — full AI business extraction (previously "extract").
+ * POST /v1/business — full AI business extraction.
  */
 export async function businessExtract(
   url: string,
@@ -164,13 +163,6 @@ export async function businessExtract(
     callbackUrl: options.callbackUrl,
     maxPages: options.maxPages,
   });
-}
-
-/**
- * POST /v1/classify — deprecated, use /v1/business instead.
- */
-export async function classifyUrl(url: string): Promise<ClassifyResult> {
-  return apiPost<ClassifyResult>('/v1/classify', { url });
 }
 
 export async function getSitemap(url: string): Promise<SitemapResult> {
@@ -222,7 +214,7 @@ export type BusinessStreamEvent =
   | { type: 'error'; message: string };
 
 /**
- * POST /v1/business/stream — streamed full AI extraction (previously /v1/extract/stream).
+ * POST /v1/business/stream — streamed full AI extraction.
  */
 export async function* businessExtractStream(
   url: string,
