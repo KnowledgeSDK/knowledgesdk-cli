@@ -6,7 +6,8 @@ import { registerExtractCommand } from './commands/extract.js';
 import { registerBusinessCommand } from './commands/business.js';
 import { registerSitemapCommand } from './commands/sitemap.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
-import { registerSearchCommand } from './commands/search.js';
+// Search command (vector search) is disabled while indexing is paused.
+// import { registerSearchCommand } from './commands/search.js';
 import { registerWebhooksCommand } from './commands/webhooks.js';
 import { registerJobsCommand } from './commands/jobs.js';
 import { printBanner, printError, theme } from './lib/output.js';
@@ -46,7 +47,7 @@ registerExtractCommand(program);
 registerBusinessCommand(program);
 registerSitemapCommand(program);
 registerScreenshotCommand(program);
-registerSearchCommand(program);
+// registerSearchCommand(program);
 registerWebhooksCommand(program);
 registerJobsCommand(program);
 
