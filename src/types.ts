@@ -13,29 +13,29 @@ export interface ApiError {
   statusCode?: number;
 }
 
-// ─── Extract (single URL → markdown) ─────────────────────────────────────────
+// ─── Scrape (single URL → markdown) ─────────────────────────────────────────
 
-export interface ExtractOptions {
+export interface ScrapeOptions {
   output?: string;
 }
 
-export interface ExtractResult {
+export interface ScrapeResult {
   url: string;
   markdown: string;
   title?: string;
   metadata?: Record<string, unknown>;
 }
 
-// ─── Business (full AI extraction) ───────────────────────────────────────────
+// ─── Extract (full AI extraction) ───────────────────────────────────────────
 
-export interface BusinessOptions {
+export interface ExtractOptions {
   async?: boolean;
   callbackUrl?: string;
   maxPages?: number;
   output?: string;
 }
 
-export interface BusinessJob {
+export interface ExtractJob {
   jobId: string;
   status: JobStatus;
   url: string;
@@ -77,16 +77,38 @@ export interface SitemapPage {
 
 // ─── Screenshot ───────────────────────────────────────────────────────────────
 
-export interface ScreenshotOptions {
-  output?: string;
+export type ViewportPreset = 'mobile' | 'tablet' | 'desktop' | 'desktop_hd';
+
+export type ScreenshotWaitUntil = 'load' | 'dom_content_loaded' | 'network_idle';
+
+export interface ScreenshotCookie {
+  name: string;
+  value: string;
+  domain?: string;
+  path?: string;
+}
+
+export interface ScreenshotApiOptions {
+  viewport?: ViewportPreset | { width: number; height: number };
+  fullPage?: boolean;
+  capture?: { selector?: string };
+  wait?: {
+    until?: ScreenshotWaitUntil;
+    selector?: string;
+    delayMs?: number;
+    timeoutMs?: number;
+  };
+  headers?: Record<string, string>;
+  auth?: { cookies?: ScreenshotCookie[] };
 }
 
 export interface ScreenshotResult {
+  runId: string;
   url: string;
-  imageBase64?: string;
-  imageUrl?: string;
-  width?: number;
-  height?: number;
+  screenshotUrl: string;
+  mimeType: string;
+  bytes: number;
+  durationMs: number;
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────

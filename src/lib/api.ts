@@ -128,36 +128,37 @@ export async function apiDelete<T>(path: string): Promise<T> {
 // ─── Specific endpoint helpers ────────────────────────────────────────────────
 
 import type {
-  BusinessJob,
+  ExtractJob,
   Job,
-  ExtractResult,
+  ScrapeResult,
   SearchResult,
   SitemapResult,
   ScreenshotResult,
+  ScreenshotApiOptions,
   Webhook,
   WebhookListResult,
   WebhookEvent,
 } from '../types.js';
 
 /**
- * POST /v1/extract — single URL to markdown.
+ * POST /v1/scrape — single URL to markdown.
  */
-export async function extractUrl(url: string): Promise<ExtractResult> {
-  return apiPost<ExtractResult>('/v1/extract', { url });
+export async function scrapeUrl(url: string): Promise<ScrapeResult> {
+  return apiPost<ScrapeResult>('/v1/scrape', { url });
 }
 
 /**
- * POST /v1/business — full AI business extraction.
+ * POST /v1/extract — full AI knowledge extraction.
  */
-export async function businessExtract(
+export async function extractRun(
   url: string,
   options: {
     async?: boolean;
     callbackUrl?: string;
     maxPages?: number;
   } = {},
-): Promise<BusinessJob> {
-  return apiPost<BusinessJob>('/v1/business', {
+): Promise<ExtractJob> {
+  return apiPost<ExtractJob>('/v1/extract', {
     url,
     async: options.async,
     callbackUrl: options.callbackUrl,
@@ -169,8 +170,11 @@ export async function getSitemap(url: string): Promise<SitemapResult> {
   return apiPost<SitemapResult>('/v1/sitemap', { url });
 }
 
-export async function takeScreenshot(url: string): Promise<ScreenshotResult> {
-  return apiPost<ScreenshotResult>('/v1/screenshot', { url });
+export async function takeScreenshot(
+  url: string,
+  options?: ScreenshotApiOptions,
+): Promise<ScreenshotResult> {
+  return apiPost<ScreenshotResult>('/v1/screenshot', { url, ...options });
 }
 
 export async function searchKnowledge(
@@ -203,7 +207,7 @@ export async function getJob(jobId: string): Promise<Job> {
 
 // ─── SSE streaming ────────────────────────────────────────────────────────────
 
-export type BusinessStreamEvent =
+export type ExtractStreamEvent =
   | { type: 'connected'; message: string }
   | { type: 'progress'; message: string }
   | { type: 'business_classified'; business: { businessName: string; businessType: string } }
@@ -214,12 +218,12 @@ export type BusinessStreamEvent =
   | { type: 'error'; message: string };
 
 /**
- * POST /v1/business/stream — streamed full AI extraction.
+ * POST /v1/extract/stream — streamed full AI extraction.
  */
-export async function* businessExtractStream(
+export async function* extractStream(
   url: string,
   options: { maxPages?: number } = {},
-): AsyncGenerator<BusinessStreamEvent> {
+): AsyncGenerator<ExtractStreamEvent> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
     throw new ApiError(
@@ -228,15 +232,15 @@ export async function* businessExtractStream(
     );
   }
 
-  const endpoint = `${resolveBaseUrl()}/v1/business/stream`;
+  const endpoint = `${resolveBaseUrl()}/v1/extract/stream`;
 
-  const queue: BusinessStreamEvent[] = [];
+  const queue: ExtractStreamEvent[] = [];
   let waitResolve: (() => void) | null = null;
   let done = false;
   let streamError: Error | null = null;
   const controller = new AbortController();
 
-  const enqueue = (item: BusinessStreamEvent) => {
+  const enqueue = (item: ExtractStreamEvent) => {
     queue.push(item);
     waitResolve?.();
     waitResolve = null;
@@ -270,7 +274,7 @@ export async function* businessExtractStream(
       if (!ev.data) return;
       try {
         const parsed = JSON.parse(ev.data);
-        enqueue({ type: ev.event || 'message', ...parsed } as BusinessStreamEvent);
+        enqueue({ type: ev.event || 'message', ...parsed } as ExtractStreamEvent);
       } catch {}
     },
     onclose() { finish(); },

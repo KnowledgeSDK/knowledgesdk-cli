@@ -2,8 +2,10 @@
 
 import { Command } from 'commander';
 import { registerConfigCommand } from './commands/config.js';
-import { registerExtractCommand } from './commands/extract.js';
-import { registerBusinessCommand } from './commands/business.js';
+import { registerScrapeCommand } from './commands/scrape.js';
+// Extract (multi-page AI knowledge extraction) is disabled while we focus on
+// the scrape surface. Re-enable to bring back the `extract` command.
+// import { registerExtractCommand } from './commands/extract.js';
 import { registerSitemapCommand } from './commands/sitemap.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
 // Search command (vector search) is disabled while indexing is paused.
@@ -25,8 +27,8 @@ program
       '',
       `  ${theme.label('Quickstart')}`,
       `  ${theme.dim('1.')} knowledgesdk config --key knowledgesdk_live_your_key`,
-      `  ${theme.dim('2.')} knowledgesdk extract https://docs.stripe.com`,
-      `  ${theme.dim('3.')} knowledgesdk business https://stripe.com`,
+      `  ${theme.dim('2.')} knowledgesdk scrape https://docs.stripe.com`,
+      `  ${theme.dim('3.')} knowledgesdk sitemap https://docs.stripe.com`,
       '',
     ].join('\n'),
   )
@@ -43,8 +45,8 @@ program
 
 // Register all sub-commands
 registerConfigCommand(program);
-registerExtractCommand(program);
-registerBusinessCommand(program);
+registerScrapeCommand(program);
+// registerExtractCommand(program); // disabled: scrape-only for now
 registerSitemapCommand(program);
 registerScreenshotCommand(program);
 // registerSearchCommand(program);

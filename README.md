@@ -26,8 +26,8 @@
 
 **KnowledgeSDK** is an API that turns any website into structured, searchable knowledge — built for developers, AI agents, and data pipelines.
 
-- **Extract** — Convert any URL to clean Markdown
-- **Business** — Full AI-powered business extraction (crawl, classify, and extract)
+- **Scrape** — Convert any URL to clean Markdown
+- **Extract** — Full AI-powered knowledge extraction (crawl, classify, and extract)
 - **Screenshot** — Full-page screenshots of any website
 - **Sitemap** — Discover all URLs on a domain
 - **Search** — Semantic search across your extracted knowledge base
@@ -52,11 +52,11 @@ npx @knowledgesdk/cli <command>
 # 1. Set your API key
 npx knowledgesdk config --key knowledgesdk_live_your_key
 
-# 2. Extract a page to markdown
-npx knowledgesdk extract https://docs.stripe.com
+# 2. Scrape a page to markdown
+npx knowledgesdk scrape https://docs.stripe.com
 
-# 3. Run full business extraction
-npx knowledgesdk business https://stripe.com
+# 3. Run full AI knowledge extraction
+npx knowledgesdk extract https://stripe.com
 
 # 4. Search your knowledge base
 npx knowledgesdk search "pricing plans"
@@ -89,14 +89,14 @@ export KNOWLEDGESDK_BASE_URL=https://api.knowledgesdk.com  # optional
 
 ## Commands
 
-### `extract` — Extract a URL to Markdown
+### `scrape` — Scrape a URL to Markdown
 
 Fetches a single page and returns its content as clean Markdown.
 
 ```bash
-npx knowledgesdk extract https://docs.stripe.com
-npx knowledgesdk extract https://docs.stripe.com --output content.md
-npx knowledgesdk extract https://docs.stripe.com --json
+npx knowledgesdk scrape https://docs.stripe.com
+npx knowledgesdk scrape https://docs.stripe.com --output content.md
+npx knowledgesdk scrape https://docs.stripe.com --json
 ```
 
 | Flag | Description |
@@ -106,28 +106,28 @@ npx knowledgesdk extract https://docs.stripe.com --json
 
 ---
 
-### `business` — Full AI business extraction
+### `extract` — Full AI knowledge extraction
 
 Crawls a website, classifies the business, and extracts structured knowledge from its pages.
 
 ```bash
 # Basic extraction (streams by default)
-npx knowledgesdk business https://stripe.com
+npx knowledgesdk extract https://stripe.com
 
 # Run asynchronously and get a job ID back
-npx knowledgesdk business https://stripe.com --async
+npx knowledgesdk extract https://stripe.com --async
 
 # Run asynchronously with a webhook callback
-npx knowledgesdk business https://stripe.com --async --callback-url https://myapp.com/hook
+npx knowledgesdk extract https://stripe.com --async --callback-url https://myapp.com/hook
 
 # Limit crawl depth
-npx knowledgesdk business https://stripe.com --max-pages 20
+npx knowledgesdk extract https://stripe.com --max-pages 20
 
 # Save result to a file
-npx knowledgesdk business https://stripe.com --output result.json
+npx knowledgesdk extract https://stripe.com --output result.json
 
 # Output raw JSON
-npx knowledgesdk business https://stripe.com --json
+npx knowledgesdk extract https://stripe.com --json
 ```
 
 | Flag | Description |
@@ -137,21 +137,6 @@ npx knowledgesdk business https://stripe.com --json
 | `--max-pages <n>` | Maximum pages to crawl |
 | `--output <file>` | Save JSON result to file |
 | `--no-stream` | Disable live streaming and wait synchronously |
-| `--json` | Output raw JSON |
-
----
-
-### `classify` — Classify a business (deprecated)
-
-> **Deprecated:** Classification is now included in the `business` command. This command will be removed in a future release.
-
-```bash
-npx knowledgesdk classify https://stripe.com
-npx knowledgesdk classify https://stripe.com --json
-```
-
-| Flag | Description |
-|------|-------------|
 | `--json` | Output raw JSON |
 
 ---
